@@ -16,6 +16,7 @@
 // file handling
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 #define OPENCV_FACE "C:/opencv/sources/data/lbpcascades/lbpcascade_frontalface.xml"
 
