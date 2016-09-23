@@ -104,6 +104,11 @@ void FaceRecognition::LBPHFaceTrainer(const std::string fileName)
 
 void FaceRecognition::Execute(const std::string fileName, const std::string grayScale)
 {
+    std::vector<cv::Rect> faces;
+    cv::Mat frame;
+    cv::Mat graySacleFrame;
+    cv::Mat original;
+
     std::cout << "Start recognizing..." << std::endl;
 
     // load pre-trained data sets
@@ -135,17 +140,12 @@ void FaceRecognition::Execute(const std::string fileName, const std::string gray
     }
 
     cv::namedWindow(window, 1);
-    long frames = 0;
+    long int frameCounter = 0;
 
-    while (true)
+    while (cv::waitKey(30) < 0)
     {
-        std::vector<cv::Rect> faces;
-        cv::Mat frame;
-        cv::Mat graySacleFrame;
-        cv::Mat original;
-
         cap >> frame;
-        ++frames;
+        ++frameCounter;
 
         if (!frame.empty())
         {
@@ -162,13 +162,14 @@ void FaceRecognition::Execute(const std::string fileName, const std::string gray
 
             std::string Pname = ""; // person name
 
+            #pragma omp parallel for
             for (int i = 0; i < int(faces.size()); i++)
             {
                 cv::Rect face_i = faces[i]; // region of interest
                 cv::Mat face = graySacleFrame(face_i);
 
                 // Resizing the cropped image to suit to database image sizes
-                cv::Mat face_resized; 
+                cv::Mat face_resized;
                 cv::resize(face, face_resized, cv::Size(img_width, img_height), 1.0, 1.0, cv::INTER_CUBIC);
 
                 // Recognizing what faces detected
@@ -182,7 +183,7 @@ void FaceRecognition::Execute(const std::string fileName, const std::string gray
 
                 /*if (label == 40)
                 {
-                    Pname = "Timur";
+                Pname = "Timur";
                 }
                 else*/
                 {
@@ -198,11 +199,10 @@ void FaceRecognition::Execute(const std::string fileName, const std::string gray
 
             }
 
-            putText(original, "Frames: " + frames, cv::Point(30, 60), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.0, GREEN, 1);
+            putText(original, "Frames: " + frameCounter, cv::Point(30, 60), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.0, GREEN, 1);
             putText(original, "Person: " + Pname, cv::Point(30, 90), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.0, GREEN, 1);
 
             imshow(window, original);
         }
-        if (cv::waitKey(30) >= 0) break;
     }
 }

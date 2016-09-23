@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <omp.h>
 
 // include opencv core
 #include "opencv2\core\core.hpp"

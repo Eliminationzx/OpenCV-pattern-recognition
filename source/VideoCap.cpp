@@ -15,6 +15,7 @@ void VideoCap::FaceDetector()
     cv::Mat frame;
     cv::Mat graySacleFrame;
     cv::Mat cropImg;
+    cv::Rect roi;
 
     if (!face_cascade.load(classifier))
     {
@@ -34,12 +35,13 @@ void VideoCap::FaceDetector()
 
     std::time_t timeBegin = std::time(0);
 
-    while (true)
+    while (cv::waitKey(30) < 0)
     {
         cap.read(frame);
         ++frameCounter;
 
         std::time_t timeNow = std::time(0) - timeBegin;
+
         if (timeNow - tick >= 1)
         {
             ++tick;
@@ -60,8 +62,7 @@ void VideoCap::FaceDetector()
 
             std::string faceset = std::to_string(faces.size());
 
-            cv::Rect roi;
-
+            #pragma omp parallel for
             for (int i = 0; i < int(faces.size()); i++)
             {
                 rectangle(frame, cv::Point(faces[i].x, faces[i].y), cv::Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height), cv::Scalar(255, 0, 255), 1, 8, 0);
@@ -86,7 +87,6 @@ void VideoCap::FaceDetector()
 
             imshow(window, frame);
         }
-        if (cv::waitKey(30) >= 0) break;
     }
 }
 
@@ -111,7 +111,7 @@ void VideoCap::CannyEdgeDetector()
 
     std::time_t timeBegin = std::time(0);
 
-    while (true)
+    while (cv::waitKey(30) != 10)
     {
         cap.read(frame);
         ++frameCounter;
@@ -124,7 +124,7 @@ void VideoCap::CannyEdgeDetector()
             frameCounter = 0;
         }
 
-        if (!frame.empty()) 
+        if (!frame.empty())
         {
             std::cout << "Average FPS: " << fps << std::endl;
 
@@ -137,7 +137,6 @@ void VideoCap::CannyEdgeDetector()
 
             imshow(window, edges);
         }
-        if (cv::waitKey(30) == 10) break;
     }
 }
 
@@ -161,7 +160,7 @@ void VideoCap::OriginalCapturing()
 
     std::time_t timeBegin = std::time(0);
 
-    while (true)
+    while (cv::waitKey(30) < 0)
     {
         cap.read(frame);
         ++frameCounter;
@@ -182,7 +181,6 @@ void VideoCap::OriginalCapturing()
 
             imshow(window, frame);
         }
-        if (cv::waitKey(30) >= 0) break;
     }
 }
 

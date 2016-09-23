@@ -41,7 +41,7 @@ void ImgProc::EdgeDetectionsCanny()
 
     cv::namedWindow(window, 1);
 
-    while (true)
+    while (cv::waitKey(30) < 0)
     {
         capture >> original;
 
@@ -55,13 +55,13 @@ void ImgProc::EdgeDetectionsCanny()
 
             cv::Mat drawing = cv::Mat::zeros(detectEdges.size(), CV_8UC3);
 
-            for (int i = 0; i< int(contours.size()); i++)
+            #pragma omp parallel for
+            for (int i = 0; i < int(contours.size()); i++)
             {
                 drawContours(original, contours, i, cv::Scalar(0, 0, 255), 1, 8, hierarchy, 0, cv::Point());
             }
-            
+
             imshow(window, original);
         }
-        if (cv::waitKey(30) >= 0) break;
     }
 }
