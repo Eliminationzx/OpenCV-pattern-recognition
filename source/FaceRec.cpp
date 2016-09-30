@@ -162,7 +162,6 @@ void FaceRecognition::Execute(const std::string fileName, const std::string gray
 
             std::string Pname = ""; // person name
 
-            #pragma omp parallel for
             for (int i = 0; i < int(faces.size()); i++)
             {
                 cv::Rect face_i = faces[i]; // region of interest

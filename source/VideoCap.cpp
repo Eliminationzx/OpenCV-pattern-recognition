@@ -62,7 +62,6 @@ void VideoCap::FaceDetector()
 
             std::string faceset = std::to_string(faces.size());
 
-            #pragma omp parallel for
             for (int i = 0; i < int(faces.size()); i++)
             {
                 rectangle(frame, cv::Point(faces[i].x, faces[i].y), cv::Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height), cv::Scalar(255, 0, 255), 1, 8, 0);
